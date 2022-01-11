@@ -1,0 +1,181 @@
+class Boxes extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      namev: "",
+      value: "",
+      circleId: "",
+      cancel: true
+    };
+    this.handleTouchEnd = this.handleTouchEnd.bind(this);
+    this.handleColourCircle = this.handleColourCircle.bind(this);
+    this.handleColourDraw = this.handleColourDraw.bind(this);
+    this.handleDoubleClick = this.handleDoubleClick.bind(this);
+    this.handleMouseDraw = this.handleMouseDraw.bind(this);
+    this.handleMouseDown = this.handleMouseDown.bind(this);
+    this.handleMouseUp = this.handleMouseUp.bind(this);
+    this.handleMouseOut = this.handleMouseOut.bind(this);
+    this.handleResetColour = this.handleResetColour.bind(this);
+    this.handleReset = this.handleReset.bind(this);
+  }
+
+  // Handle Colour Circle
+  handleColourCircle(e) {
+    e.preventDefault();
+    let heldCircle = e.target.getAttribute("id");
+    let hex = Math.floor(Math.random() * 0xffffff);
+    let colr = "#" + ("000000" + hex.toString(16)).substr(-6);
+    e.target.style.background = `radial-gradient(circle, rgba(255,255,255,0.88), ${colr}, ${colr}, ${colr})`;
+    e.target.style.boxShadow = `1px 1px 22px 3px ${colr}, 0px 0px 6px 1px ${colr}`;
+    this.setState = {
+      value: colr,
+      circleId: heldCircle
+    };
+  }
+
+  // Handle Colour Draw
+  handleColourDraw(e) {
+    e.preventDefault();
+    let drawArray = [];
+    let draw = document.elementFromPoint(
+      e.touches[0].clientX,
+      e.touches[0].clientY
+    );
+    if (draw.className === "pixel") {
+      drawArray.push(draw);
+
+      draw.style.background = `radial-gradient(circle, rgba(255,255,255,0.88), ${this.state.value}, ${this.state.value}, ${this.state.value})`;
+      draw.style.boxShadow = `1px 1px 22px 3px ${this.state.value}, 0px 0px 6px 1px ${this.state.value}`;
+    }
+  }
+
+  // Handle Mouse Draw
+  handleMouseDraw(e) {
+    if (
+      typeof e.cancelable !== "boolean" ||
+      e.cancelable !== this.state.cancel
+    ) {
+      e.preventDefault();
+      let drawArray = [];
+      let draw = document.elementFromPoint(e.clientX, e.clientY);
+      if (draw.className === "pixel") {
+        drawArray.push(draw);
+
+        draw.style.background = `radial-gradient(circle, rgba(255,255,255,0.88), ${this.state.value}, ${this.state.value}, ${this.state.value})`;
+        draw.style.boxShadow = `1px 1px 22px 3px ${this.state.value}, 0px 0px 6px 1px ${this.state.value}`;
+      }
+    }
+  }
+
+  // Handle Mouse Up
+  handleMouseUp(e) {
+    e.preventDefault();
+    this.setState({
+      cancel: true,
+      value: ""
+    });
+  }
+
+  // Handle Mouse Down
+  handleMouseDown(e) {
+    this.handleColourCircle(e);
+    e.preventDefault();
+    this.setState({
+      cancel: false
+    });
+  }
+
+  // Handle Double Click
+  handleDoubleClick(e) {
+    e.preventDefault();
+    e.target.style.background = "none";
+    e.target.style.boxShadow = "none";
+  }
+
+  // Handle Mouse Out
+  handleMouseOut(e) {
+    e.defaultPrevented();
+    this.setState({
+      value: ""
+    });
+  }
+
+  // Handle Touch End
+  handleTouchEnd(e) {
+    e.preventDefault();
+  }
+
+  // Handle Reset
+  handleReset(e) {
+    const getCircles = document.getElementsByClassName("pixel");
+    for (let colour of getCircles) {
+      colour.style.background = "none";
+      colour.style.boxShadow = "none";
+    }
+  }
+
+  // Handle Reset Colour
+  handleResetColour(e) {
+    const getCircle = document.getElementById(this.state.circleId);
+    getCircle.style.background = "none";
+    getCircle.style.boxShadow = "none";
+    this.setState({
+      circleId: ""
+    });
+  }
+
+  render() {
+    let draw = [];
+    for (let i = 0; i < 513; i++) {
+      draw.push(
+        <div
+          className="pixel"
+          value={i}
+          key={i}
+          id={i}
+          onTouchStart={this.handleColourCircle}
+          onDoubleClick={this.handleDoubleClick}
+          onMouseDown={this.handleMouseDown}
+          onMouseUp={this.handleMouseUp}
+        ></div>
+      );
+    }
+    return (
+      <div className="wrapper" onMouseUp={this.handleMouseUp}>
+        <div className="container">
+          <div className="heading">
+            <h1>Light-Bright Colour Changing Circles</h1>
+            <button onClick={this.handleResetColour}>RESET COLOUR</button>
+            <button onClick={this.handleReset}>RESET ALL</button>
+          </div>
+          <div
+            className="boxes"
+            id="litebrite"
+            onTouchMove={this.handleColourDraw}
+            onMouseMove={this.handleMouseDraw}
+            onMouseUp={this.handleMouseUp}
+          >
+            {draw}
+          </div>
+        </div>
+        <section>
+          <p>Desktop: Click and Move Mouse to Light Circles.</p>
+          <p>Desktop: Double Click to remove colour from a circle.</p>
+          <p>Desktop and Touch: Click/Touch to change colour of a circle.</p>
+          <p>Touch: Touch and Move Finger on Device to Light Circles.</p>
+          <p>
+            All: Click <strong>RESET COLOUR</strong> button to remove a colour
+            touch or click.
+          </p>
+          <p>
+            All: Click <strong>RESET ALL</strong> button to remove colours from
+            all circles.
+          </p>
+          <h2>Thank you for playing.</h2>
+        </section>
+      </div>
+    );
+  }
+}
+
+ReactDOM.render(<Boxes />, document.getElementById("root"));
