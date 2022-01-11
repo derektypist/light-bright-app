@@ -30,8 +30,8 @@ Make sure all user stories have been met.
 
 ## Deployment
 
-On [CodePen](https://codepen.io/derektypist/pen/gOGdNNW)
-On [GitHub Pages](https://derektypist.github.io/light-bright-app) at the main branch.
+- On [CodePen](https://codepen.io/derektypist/pen/gOGdNNW)
+- On [GitHub Pages](https://derektypist.github.io/light-bright-app) at the main branch.
 
 ## Credits
 
